@@ -17,7 +17,6 @@
     --dim:     #333333;
     --white:   #ffffff;
 
-    /* Armour type colours (selected only) */
     --crude-color:    #c0c0c0;
     --crude-bg:       #222222;
     --crude-border:   #555555;
@@ -34,7 +33,6 @@
     --clothing-bg:    #1a1030;
     --clothing-border:#3d2570;
 
-    /* Quality tier colours (selected only) */
     --t0-color:  #aaaaaa;
     --t0-bg:     #1f1f1f;
     --t0-border: #444444;
@@ -59,7 +57,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Header ── */
   header {
     padding: 40px 32px 32px;
     max-width: 1280px;
@@ -72,7 +69,6 @@
   h1 em { font-style: normal; color: var(--muted); font-weight: 300; }
   .header-desc { font-size: 12px; color: var(--muted); max-width: 260px; line-height: 1.5; text-align: right; }
 
-  /* ── Layout ── */
   main {
     max-width: 1280px;
     margin: 0 auto;
@@ -82,7 +78,6 @@
     gap: 14px;
   }
 
-  /* 5-column card row */
   .cards-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -91,7 +86,6 @@
   @media (max-width: 900px) { .cards-row { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px) { .cards-row { grid-template-columns: repeat(2, 1fr); } main { padding: 16px 16px 48px; } header { padding: 28px 16px 22px; } }
 
-  /* ── Slot card — compact ── */
   .slot-card {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -101,7 +95,6 @@
   }
   .slot-card:hover { border-color: var(--border2); }
 
-  /* Active card border reflects selected type */
   .slot-card.active.type-Crude    { border-color: var(--crude-border); }
   .slot-card.active.type-Light    { border-color: var(--light-border); }
   .slot-card.active.type-Medium   { border-color: var(--medium-border); }
@@ -127,7 +120,6 @@
   }
   .slot-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* Icon border tint when active */
   .slot-card.active.type-Crude    .slot-icon { border-color: var(--crude-border); }
   .slot-card.active.type-Light    .slot-icon { border-color: var(--light-border); }
   .slot-card.active.type-Medium   .slot-icon { border-color: var(--medium-border); }
@@ -138,7 +130,6 @@
   .slot-name { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--white); text-transform: uppercase; }
   .slot-sub  { font-size: 10px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* Type badge — only shows colour when active */
   .slot-badge {
     font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
     padding: 2px 5px; border-radius: 3px; text-transform: uppercase; white-space: nowrap;
@@ -157,10 +148,8 @@
     color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
   }
 
-  /* ── Armour buttons ── */
   .armour-grid { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
 
-  /* ALL unselected: black/bland */
   .armour-btn {
     width: 100%;
     padding: 5px 8px;
@@ -178,20 +167,17 @@
   }
   .armour-btn:hover { border-color: var(--border2); color: var(--text); }
 
-  /* None btn */
   .armour-btn.none-btn { color: var(--dim); font-size: 10px; }
   .armour-btn.none-btn.selected { background: var(--surface); border-color: var(--border2); color: var(--muted); }
 
-  /* Selected: show type colour */
   .armour-btn.selected.type-Crude    { background: var(--crude-bg);    border-color: var(--crude-border);    color: var(--crude-color);    font-weight: 600; }
   .armour-btn.selected.type-Light    { background: var(--light-bg);    border-color: var(--light-border);    color: var(--light-color);    font-weight: 600; }
   .armour-btn.selected.type-Medium   { background: var(--medium-bg);   border-color: var(--medium-border);   color: var(--medium-color);   font-weight: 600; }
   .armour-btn.selected.type-Heavy    { background: var(--heavy-bg);    border-color: var(--heavy-border);    color: var(--heavy-color);    font-weight: 600; }
   .armour-btn.selected.type-Clothing { background: var(--clothing-bg); border-color: var(--clothing-border); color: var(--clothing-color); font-weight: 600; }
 
-  /* ── Quality buttons ── */
   .quality-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  /* ALL unselected: black/bland */
+
   .quality-btn {
     padding: 5px 2px;
     background: var(--surface);
@@ -207,21 +193,25 @@
     text-transform: uppercase;
     text-align: center;
   }
-  .quality-btn:hover { border-color: var(--border2); color: var(--text); }
+  .quality-btn:hover:not(:disabled) { border-color: var(--border2); color: var(--text); }
 
-  /* Selected: show tier colour */
+  /* Disabled state for locked tiers */
+  .quality-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   .quality-btn.selected.tier-t0 { background: var(--t0-bg); border-color: var(--t0-border); color: var(--t0-color); font-weight: 700; }
   .quality-btn.selected.tier-t1 { background: var(--t1-bg); border-color: var(--t1-border); color: var(--t1-color); font-weight: 700; }
   .quality-btn.selected.tier-t2 { background: var(--t2-bg); border-color: var(--t2-border); color: var(--t2-color); font-weight: 700; }
   .quality-btn.selected.tier-t3 { background: var(--t3-bg); border-color: var(--t3-border); color: var(--t3-color); font-weight: 700; }
 
-  /* ── Stat preview (per card) ── */
   .stat-preview { display: flex; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
   .stat-pill { flex: 1; padding: 6px 7px; background: var(--surface); border-radius: 4px; border: 1px solid var(--border); }
   .stat-pill-label { font-size: 8px; font-weight: 500; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
   .stat-pill-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; line-height: 1; }
 
-  /* ── Results panel ── */
   .results-panel {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -249,7 +239,6 @@
   .result-stat-value { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
   .result-stat-sub { font-size: 10px; color: var(--muted); margin-top: 5px; }
 
-  /* ── Bars ── */
   .bar-section { margin-bottom: 16px; }
   .bar-row { margin-bottom: 8px; }
   .bar-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
@@ -260,7 +249,6 @@
   .bar-fill.dmg  { background: #f87171; }
   .bar-fill.stab { background: #60a5fa; }
 
-  /* ── Equipped chips ── */
   .equipped-section { margin-bottom: 14px; }
   .equipped-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
   .equipped-chip {
@@ -270,7 +258,6 @@
   }
   .equipped-chip.none { color: var(--muted); border-color: var(--border); font-weight: 400; }
 
-  /* ── Formula ── */
   .formula-note {
     padding: 10px 13px; background: var(--bg); border-radius: 4px;
     border: 1px solid var(--border); font-size: 11px; color: var(--muted); line-height: 1.6;
@@ -299,7 +286,7 @@
 const SLOTS = [
   { id: 'helmet',      label: 'Helmet',         slot: 'Helmet',         iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmouryHead001_R.png?ee3c75' },
   { id: 'chest',       label: 'Chest Armour',   slot: 'Chest Armour',   iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmourBody001_R.png?f0e77f' },
-  { id: 'legs',        label: 'Leg Armour',     slot: 'Leg Armour',     iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmourLeg001_R.png?611eb3' },
+  { id: 'legs',        label: 'Leg Armour',      slot: 'Leg Armour',     iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmourLeg001_R.png?611eb3' },
   { id: 'chest_cloth', label: 'Chest Clothing', slot: 'Chest Clothing', iconUrl: 'https://anvilempires.wiki.gg/images/IconClothingBody001_R_M.png?3b4c7d' },
   { id: 'legs_cloth',  label: 'Leg Clothing',   slot: 'Leg Clothing',   iconUrl: 'https://anvilempires.wiki.gg/images/IconClothingLeg001_R_M_.png?5de935' },
 ];
@@ -331,6 +318,12 @@ const QUALITY = [
 const state = {};
 SLOTS.forEach(s => { state[s.id] = { armour: null, quality: 'base' }; });
 
+function isCrudeArmour(armourName) {
+  if (!armourName) return false;
+  const a = ARMOUR_DATA.find(x => x.name === armourName);
+  return a && a.type === 'Crude';
+}
+
 function getArmourForSlot(slotId) {
   const slot = SLOTS.find(s => s.id === slotId);
   return ARMOUR_DATA.filter(a => a.slot === slot.slot);
@@ -353,7 +346,6 @@ function render() {
   const app = document.getElementById('app');
   app.innerHTML = '';
 
-  // ── Results panel ──
   const dmgValues  = SLOTS.map(s => getEffectiveStat(state[s.id].armour, 'dmg',  state[s.id].quality));
   const stabValues = SLOTS.map(s => getEffectiveStat(state[s.id].armour, 'stab', state[s.id].quality));
   const totalDmg   = calcMitigation(dmgValues);
@@ -430,7 +422,6 @@ function render() {
   `;
   app.appendChild(results);
 
-  // ── Cards row (all 5 in one row) ──
   const cardsRow = document.createElement('div');
   cardsRow.className = 'cards-row';
 
@@ -438,6 +429,7 @@ function render() {
     const s = state[slot.id];
     const options = getArmourForSlot(slot.id);
     const currentArmour = s.armour ? ARMOUR_DATA.find(a => a.name === s.armour) : null;
+    const isCrude = isCrudeArmour(s.armour);
     const dmgVal  = getEffectiveStat(s.armour, 'dmg',  s.quality);
     const stabVal = getEffectiveStat(s.armour, 'stab', s.quality);
     const typeClass = currentArmour ? `type-${currentArmour.type}` : '';
@@ -461,7 +453,16 @@ function render() {
         </div>
         <div class="section-label">Quality</div>
         <div class="quality-row">
-          ${QUALITY.map(q => `<button class="quality-btn tier-${q.tier} ${s.quality===q.key?'selected':''}" data-slot="${slot.id}" data-quality="${q.key}">${q.label}</button>`).join('')}
+          ${QUALITY.map(q => {
+            const locked = isCrude && q.key !== 'base';
+            return `<button
+              class="quality-btn tier-${q.tier} ${s.quality===q.key?'selected':''}"
+              data-slot="${slot.id}"
+              data-quality="${q.key}"
+              ${locked ? 'disabled' : ''}
+              ${locked ? 'title="Crude armour is T0 only"' : ''}
+            >${q.label}</button>`;
+          }).join('')}
         </div>
         ${s.armour ? `
         <div class="stat-preview">
@@ -481,10 +482,16 @@ function render() {
 
   app.appendChild(cardsRow);
 
-  // ── Events ──
+  // Events
   app.querySelectorAll('.armour-btn').forEach(btn => {
     btn.addEventListener('click', e => {
-      state[e.target.dataset.slot].armour = e.target.dataset.armour || null;
+      const slotId = e.target.dataset.slot;
+      const armourName = e.target.dataset.armour || null;
+      state[slotId].armour = armourName;
+      // If switching to Crude, force quality back to T0
+      if (isCrudeArmour(armourName)) {
+        state[slotId].quality = 'base';
+      }
       render();
     });
   });
