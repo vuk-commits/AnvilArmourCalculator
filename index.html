@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anvil Empires — Armour Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0a0a0a;
+    --surface: #111111;
+    --panel:   #161616;
+    --border:  #242424;
+    --border2: #2e2e2e;
+    --text:    #f0f0f0;
+    --muted:   #555555;
+    --dim:     #333333;
+    --white:   #ffffff;
+
+    /* Armour type colours (selected only) */
+    --crude-color:    #c0c0c0;
+    --crude-bg:       #222222;
+    --crude-border:   #555555;
+    --light-color:    #6ee7b7;
+    --light-bg:       #0d2b20;
+    --light-border:   #1e5c3e;
+    --medium-color:   #93c5fd;
+    --medium-bg:      #0d1f35;
+    --medium-border:  #1a3a5c;
+    --heavy-color:    #fbbf24;
+    --heavy-bg:       #2b1d06;
+    --heavy-border:   #5c3a0a;
+    --clothing-color: #c4b5fd;
+    --clothing-bg:    #1a1030;
+    --clothing-border:#3d2570;
+
+    /* Quality tier colours (selected only) */
+    --t0-color:  #aaaaaa;
+    --t0-bg:     #1f1f1f;
+    --t0-border: #444444;
+    --t1-color:  #6ee7b7;
+    --t1-bg:     #0d2b20;
+    --t1-border: #1e5c3e;
+    --t2-color:  #60a5fa;
+    --t2-bg:     #0d1a30;
+    --t2-border: #1a3558;
+    --t3-color:  #fbbf24;
+    --t3-bg:     #2b1e06;
+    --t3-border: #5c3a08;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 40px 32px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: clamp(22px, 3vw, 36px); font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1.1; }
+  h1 em { font-style: normal; color: var(--muted); font-weight: 300; }
+  .header-desc { font-size: 12px; color: var(--muted); max-width: 260px; line-height: 1.5; text-align: right; }
+
+  /* ── Layout ── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 32px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* 5-column card row */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 900px) { .cards-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .cards-row { grid-template-columns: repeat(2, 1fr); } main { padding: 16px 16px 48px; } header { padding: 28px 16px 22px; } }
+
+  /* ── Slot card — compact ── */
+  .slot-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .slot-card:hover { border-color: var(--border2); }
+
+  /* Active card border reflects selected type */
+  .slot-card.active.type-Crude    { border-color: var(--crude-border); }
+  .slot-card.active.type-Light    { border-color: var(--light-border); }
+  .slot-card.active.type-Medium   { border-color: var(--medium-border); }
+  .slot-card.active.type-Heavy    { border-color: var(--heavy-border); }
+  .slot-card.active.type-Clothing { border-color: var(--clothing-border); }
+
+  .slot-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  .slot-icon {
+    width: 32px; height: 32px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background: #0e0e0e;
+    border: 1px solid var(--border2);
+    overflow: hidden;
+    display: grid; place-items: center;
+    transition: border-color 0.2s;
+  }
+  .slot-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Icon border tint when active */
+  .slot-card.active.type-Crude    .slot-icon { border-color: var(--crude-border); }
+  .slot-card.active.type-Light    .slot-icon { border-color: var(--light-border); }
+  .slot-card.active.type-Medium   .slot-icon { border-color: var(--medium-border); }
+  .slot-card.active.type-Heavy    .slot-icon { border-color: var(--heavy-border); }
+  .slot-card.active.type-Clothing .slot-icon { border-color: var(--clothing-border); }
+
+  .slot-title-group { flex: 1; min-width: 0; }
+  .slot-name { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--white); text-transform: uppercase; }
+  .slot-sub  { font-size: 10px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Type badge — only shows colour when active */
+  .slot-badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 2px 5px; border-radius: 3px; text-transform: uppercase; white-space: nowrap;
+    color: var(--muted); background: var(--surface); border: 1px solid var(--border);
+  }
+  .slot-card.active.type-Crude    .slot-badge { color: var(--crude-color);    background: var(--crude-bg);    border-color: var(--crude-border); }
+  .slot-card.active.type-Light    .slot-badge { color: var(--light-color);    background: var(--light-bg);    border-color: var(--light-border); }
+  .slot-card.active.type-Medium   .slot-badge { color: var(--medium-color);   background: var(--medium-bg);   border-color: var(--medium-border); }
+  .slot-card.active.type-Heavy    .slot-badge { color: var(--heavy-color);    background: var(--heavy-bg);    border-color: var(--heavy-border); }
+  .slot-card.active.type-Clothing .slot-badge { color: var(--clothing-color); background: var(--clothing-bg); border-color: var(--clothing-border); }
+
+  .slot-body { padding: 10px 11px; }
+
+  .section-label {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.14em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+  }
+
+  /* ── Armour buttons ── */
+  .armour-grid { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+
+  /* ALL unselected: black/bland */
+  .armour-btn {
+    width: 100%;
+    padding: 5px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.1s;
+    text-align: left;
+    line-height: 1.2;
+  }
+  .armour-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  /* None btn */
+  .armour-btn.none-btn { color: var(--dim); font-size: 10px; }
+  .armour-btn.none-btn.selected { background: var(--surface); border-color: var(--border2); color: var(--muted); }
+
+  /* Selected: show type colour */
+  .armour-btn.selected.type-Crude    { background: var(--crude-bg);    border-color: var(--crude-border);    color: var(--crude-color);    font-weight: 600; }
+  .armour-btn.selected.type-Light    { background: var(--light-bg);    border-color: var(--light-border);    color: var(--light-color);    font-weight: 600; }
+  .armour-btn.selected.type-Medium   { background: var(--medium-bg);   border-color: var(--medium-border);   color: var(--medium-color);   font-weight: 600; }
+  .armour-btn.selected.type-Heavy    { background: var(--heavy-bg);    border-color: var(--heavy-border);    color: var(--heavy-color);    font-weight: 600; }
+  .armour-btn.selected.type-Clothing { background: var(--clothing-bg); border-color: var(--clothing-border); color: var(--clothing-color); font-weight: 600; }
+
+  /* ── Quality buttons ── */
+  .quality-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  /* ALL unselected: black/bland */
+  .quality-btn {
+    padding: 5px 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .quality-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  /* Selected: show tier colour */
+  .quality-btn.selected.tier-t0 { background: var(--t0-bg); border-color: var(--t0-border); color: var(--t0-color); font-weight: 700; }
+  .quality-btn.selected.tier-t1 { background: var(--t1-bg); border-color: var(--t1-border); color: var(--t1-color); font-weight: 700; }
+  .quality-btn.selected.tier-t2 { background: var(--t2-bg); border-color: var(--t2-border); color: var(--t2-color); font-weight: 700; }
+  .quality-btn.selected.tier-t3 { background: var(--t3-bg); border-color: var(--t3-border); color: var(--t3-color); font-weight: 700; }
+
+  /* ── Stat preview (per card) ── */
+  .stat-preview { display: flex; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .stat-pill { flex: 1; padding: 6px 7px; background: var(--surface); border-radius: 4px; border: 1px solid var(--border); }
+  .stat-pill-label { font-size: 8px; font-weight: 500; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
+  .stat-pill-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; line-height: 1; }
+
+  /* ── Results panel ── */
+  .results-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .results-header { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  .results-title { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+  .results-body { padding: 16px 20px; }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 600px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .result-stat { padding: 16px 18px; background: var(--surface); }
+  .result-stat-label { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .result-stat-value { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .result-stat-sub { font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+  /* ── Bars ── */
+  .bar-section { margin-bottom: 16px; }
+  .bar-row { margin-bottom: 8px; }
+  .bar-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .bar-label span { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .bar-label strong { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+  .bar-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.45s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .bar-fill.dmg  { background: #f87171; }
+  .bar-fill.stab { background: #60a5fa; }
+
+  /* ── Equipped chips ── */
+  .equipped-section { margin-bottom: 14px; }
+  .equipped-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .equipped-chip {
+    padding: 3px 8px; border-radius: 3px;
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--text); font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+  }
+  .equipped-chip.none { color: var(--muted); border-color: var(--border); font-weight: 400; }
+
+  /* ── Formula ── */
+  .formula-note {
+    padding: 10px 13px; background: var(--bg); border-radius: 4px;
+    border: 1px solid var(--border); font-size: 11px; color: var(--muted); line-height: 1.6;
+  }
+  .formula-note code {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--text); background: var(--border); padding: 1px 5px; border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-label">Anvil Empires</div>
+      <h1>Armour <em>Calculator</em></h1>
+    </div>
+    <div class="header-desc">Select pieces and quality tier to compute total damage &amp; stability mitigation.</div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<script>
+const SLOTS = [
+  { id: 'helmet',      label: 'Helmet',         slot: 'Helmet',         iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmouryHead001_R.png?ee3c75' },
+  { id: 'chest',       label: 'Chest Armour',   slot: 'Chest Armour',   iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmourBody001_R.png?f0e77f' },
+  { id: 'legs',        label: 'Leg Armour',     slot: 'Leg Armour',     iconUrl: 'https://anvilempires.wiki.gg/images/IconHeavyArmourLeg001_R.png?611eb3' },
+  { id: 'chest_cloth', label: 'Chest Clothing', slot: 'Chest Clothing', iconUrl: 'https://anvilempires.wiki.gg/images/IconClothingBody001_R_M.png?3b4c7d' },
+  { id: 'legs_cloth',  label: 'Leg Clothing',   slot: 'Leg Clothing',   iconUrl: 'https://anvilempires.wiki.gg/images/IconClothingLeg001_R_M_.png?5de935' },
+];
+
+const ARMOUR_DATA = [
+  { name: 'Crude Helmet',            slot: 'Helmet',         type: 'Crude',    dmg: 0.04, stab: 0.00 },
+  { name: 'Light Helmet',            slot: 'Helmet',         type: 'Light',    dmg: 0.06, stab: 0.03 },
+  { name: 'Reinforced Helmet',       slot: 'Helmet',         type: 'Medium',   dmg: 0.13, stab: 0.09 },
+  { name: 'Heavy Helmet',            slot: 'Helmet',         type: 'Heavy',    dmg: 0.16, stab: 0.11 },
+  { name: 'Crude Chest Armour',      slot: 'Chest Armour',   type: 'Crude',    dmg: 0.11, stab: 0.00 },
+  { name: 'Light Chest Armour',      slot: 'Chest Armour',   type: 'Light',    dmg: 0.24, stab: 0.12 },
+  { name: 'Reinforced Chest Armour', slot: 'Chest Armour',   type: 'Medium',   dmg: 0.58, stab: 0.32 },
+  { name: 'Heavy Chest Armour',      slot: 'Chest Armour',   type: 'Heavy',    dmg: 0.64, stab: 0.35 },
+  { name: 'Common Garment',          slot: 'Chest Clothing', type: 'Clothing', dmg: 0.04, stab: 0.02 },
+  { name: 'Crude Leg Armour',        slot: 'Leg Armour',     type: 'Crude',    dmg: 0.01, stab: 0.00 },
+  { name: 'Light Leg Armour',        slot: 'Leg Armour',     type: 'Light',    dmg: 0.04, stab: 0.02 },
+  { name: 'Reinforced Leg Armour',   slot: 'Leg Armour',     type: 'Medium',   dmg: 0.08, stab: 0.07 },
+  { name: 'Heavy Leg Armour',        slot: 'Leg Armour',     type: 'Heavy',    dmg: 0.10, stab: 0.08 },
+  { name: 'Common Bottoms',          slot: 'Leg Clothing',   type: 'Clothing', dmg: 0.02, stab: 0.01 },
+];
+
+const QUALITY = [
+  { label: 'T0 +0%',  key: 'base', mult: 1.0, tier: 't0' },
+  { label: 'T1 +10%', key: 'q1',   mult: 1.1, tier: 't1' },
+  { label: 'T2 +20%', key: 'q2',   mult: 1.2, tier: 't2' },
+  { label: 'T3 +30%', key: 'q3',   mult: 1.3, tier: 't3' },
+];
+
+const state = {};
+SLOTS.forEach(s => { state[s.id] = { armour: null, quality: 'base' }; });
+
+function getArmourForSlot(slotId) {
+  const slot = SLOTS.find(s => s.id === slotId);
+  return ARMOUR_DATA.filter(a => a.slot === slot.slot);
+}
+function getEffectiveStat(armourName, stat, quality) {
+  if (!armourName) return 0;
+  const a = ARMOUR_DATA.find(x => x.name === armourName);
+  if (!a) return 0;
+  return Math.min(a[stat] * QUALITY.find(x => x.key === quality).mult, 1);
+}
+function calcMitigation(values) {
+  return 1 - values.reduce((acc, v) => acc * (1 - v), 1);
+}
+function calcEffectiveHealth(values) {
+  const p = values.reduce((acc, v) => acc * (1 - v), 1);
+  return p <= 0 ? Infinity : 100 / p;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // ── Results panel ──
+  const dmgValues  = SLOTS.map(s => getEffectiveStat(state[s.id].armour, 'dmg',  state[s.id].quality));
+  const stabValues = SLOTS.map(s => getEffectiveStat(state[s.id].armour, 'stab', state[s.id].quality));
+  const totalDmg   = calcMitigation(dmgValues);
+  const totalStab  = calcMitigation(stabValues);
+  const ehDmg      = calcEffectiveHealth(dmgValues);
+  const ehStab     = calcEffectiveHealth(stabValues);
+  const equipped   = SLOTS.filter(s => state[s.id].armour).map(s => state[s.id].armour);
+
+  const typeColorMap = {
+    Crude: { color: 'var(--crude-color)', bg: 'var(--crude-bg)', border: 'var(--crude-border)' },
+    Light: { color: 'var(--light-color)', bg: 'var(--light-bg)', border: 'var(--light-border)' },
+    Medium: { color: 'var(--medium-color)', bg: 'var(--medium-bg)', border: 'var(--medium-border)' },
+    Heavy: { color: 'var(--heavy-color)', bg: 'var(--heavy-bg)', border: 'var(--heavy-border)' },
+    Clothing: { color: 'var(--clothing-color)', bg: 'var(--clothing-bg)', border: 'var(--clothing-border)' },
+  };
+
+  const results = document.createElement('div');
+  results.className = 'results-panel';
+  results.innerHTML = `
+    <div class="results-header"><div class="results-title">Total Mitigation</div></div>
+    <div class="results-body">
+      <div class="results-grid">
+        <div class="result-stat">
+          <div class="result-stat-label">Damage Mitigation</div>
+          <div class="result-stat-value" style="color:#f87171">${(totalDmg*100).toFixed(2)}%</div>
+          <div class="result-stat-sub">damage absorbed</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-label">Stability Mitigation</div>
+          <div class="result-stat-value" style="color:#60a5fa">${(totalStab*100).toFixed(2)}%</div>
+          <div class="result-stat-sub">stability absorbed</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-label">Effective HP (Dmg)</div>
+          <div class="result-stat-value" style="color:#f87171">${ehDmg===Infinity?'∞':ehDmg.toFixed(1)}</div>
+          <div class="result-stat-sub">vs physical</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-label">Effective HP (Stab)</div>
+          <div class="result-stat-value" style="color:#60a5fa">${ehStab===Infinity?'∞':ehStab.toFixed(1)}</div>
+          <div class="result-stat-sub">vs stability</div>
+        </div>
+      </div>
+      <div class="bar-section">
+        <div class="bar-row">
+          <div class="bar-label"><span>Damage Mitigation</span><strong style="color:#f87171">${(totalDmg*100).toFixed(2)}%</strong></div>
+          <div class="bar-track"><div class="bar-fill dmg" style="width:${Math.min(totalDmg*100,100)}%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Stability Mitigation</span><strong style="color:#60a5fa">${(totalStab*100).toFixed(2)}%</strong></div>
+          <div class="bar-track"><div class="bar-fill stab" style="width:${Math.min(totalStab*100,100)}%"></div></div>
+        </div>
+      </div>
+      <div class="equipped-section">
+        <div class="section-label">Equipped</div>
+        <div class="equipped-chips">
+          ${equipped.length
+            ? equipped.map(e => {
+                const a = ARMOUR_DATA.find(x => x.name === e);
+                const c = a ? typeColorMap[a.type] : null;
+                return c
+                  ? `<div class="equipped-chip" style="color:${c.color};background:${c.bg};border-color:${c.border}">${e}</div>`
+                  : `<div class="equipped-chip">${e}</div>`;
+              }).join('')
+            : '<div class="equipped-chip none">Nothing equipped</div>'}
+        </div>
+      </div>
+      <div class="formula-note">
+        <code>TotalMitigation = 1 − ((1−A)×(1−B)×…)</code> &nbsp;·&nbsp;
+        Quality multiplies base value per piece &nbsp;·&nbsp;
+        <code>EffectiveHealth = 100 / ((1−A)×(1−B)×…)</code>
+      </div>
+    </div>
+  `;
+  app.appendChild(results);
+
+  // ── Cards row (all 5 in one row) ──
+  const cardsRow = document.createElement('div');
+  cardsRow.className = 'cards-row';
+
+  SLOTS.forEach(slot => {
+    const s = state[slot.id];
+    const options = getArmourForSlot(slot.id);
+    const currentArmour = s.armour ? ARMOUR_DATA.find(a => a.name === s.armour) : null;
+    const dmgVal  = getEffectiveStat(s.armour, 'dmg',  s.quality);
+    const stabVal = getEffectiveStat(s.armour, 'stab', s.quality);
+    const typeClass = currentArmour ? `type-${currentArmour.type}` : '';
+
+    const card = document.createElement('div');
+    card.className = `slot-card ${s.armour ? 'active' : ''} ${typeClass}`;
+    card.innerHTML = `
+      <div class="slot-header">
+        <div class="slot-icon"><img src="${slot.iconUrl}" alt="${slot.label}"></div>
+        <div class="slot-title-group">
+          <div class="slot-name">${slot.label}</div>
+          <div class="slot-sub">${s.armour || '—'}</div>
+        </div>
+        ${currentArmour ? `<div class="slot-badge">${currentArmour.type}</div>` : ''}
+      </div>
+      <div class="slot-body">
+        <div class="section-label">Piece</div>
+        <div class="armour-grid">
+          <button class="armour-btn none-btn ${!s.armour?'selected':''}" data-slot="${slot.id}" data-armour="">None</button>
+          ${options.map(a => `<button class="armour-btn type-${a.type} ${s.armour===a.name?'selected':''}" data-slot="${slot.id}" data-armour="${a.name}">${a.name}</button>`).join('')}
+        </div>
+        <div class="section-label">Quality</div>
+        <div class="quality-row">
+          ${QUALITY.map(q => `<button class="quality-btn tier-${q.tier} ${s.quality===q.key?'selected':''}" data-slot="${slot.id}" data-quality="${q.key}">${q.label}</button>`).join('')}
+        </div>
+        ${s.armour ? `
+        <div class="stat-preview">
+          <div class="stat-pill">
+            <div class="stat-pill-label">Dmg</div>
+            <div class="stat-pill-value" style="color:#f87171">${(dmgVal*100).toFixed(1)}%</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">Stab</div>
+            <div class="stat-pill-value" style="color:#60a5fa">${(stabVal*100).toFixed(1)}%</div>
+          </div>
+        </div>` : ''}
+      </div>
+    `;
+    cardsRow.appendChild(card);
+  });
+
+  app.appendChild(cardsRow);
+
+  // ── Events ──
+  app.querySelectorAll('.armour-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      state[e.target.dataset.slot].armour = e.target.dataset.armour || null;
+      render();
+    });
+  });
+  app.querySelectorAll('.quality-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      state[e.target.dataset.slot].quality = e.target.dataset.quality;
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
