@@ -72,7 +72,7 @@
     border-bottom: 1px solid var(--border);
   }
   .header-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
-  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
   h1 { font-size: clamp(22px, 3vw, 36px); font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1.1; }
   h1 em { font-style: normal; color: var(--muted); font-weight: 300; }
   .header-desc { font-size: 12px; color: var(--muted); max-width: 280px; line-height: 1.5; text-align: right; }
@@ -187,13 +187,13 @@
     border-radius: 7px;
     overflow: hidden;
   }
-  .results-header {
+    .results-header { padding: 9px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; 
     padding: 12px 20px;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
   .results-title { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
-  .results-body { padding: 16px 20px; }
+  .results-body { padding: 10px 16px; }
 
   /* Single-loadout stats grid */
   .results-grid {
@@ -204,7 +204,7 @@
     border: 1px solid var(--border);
     border-radius: 5px;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
   @media (max-width: 700px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
   .result-stat { padding: 14px 16px; background: var(--surface); }
@@ -217,9 +217,12 @@
     display: grid;
     grid-template-columns: 1fr 28px 1fr;
     gap: 0;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
-  .vs-col { display: grid; grid-template-rows: auto 1fr 1fr 1fr 1fr; gap: 1px; }
+  .vs-col { display: grid; grid-template-rows: auto 1fr 1fr; gap: 1px; }
+  .vs-pair-half { padding: 7px 12px; background: var(--surface); display: flex; flex-direction: column; justify-content: center; }
+  .vs-pair-half.winner-a { background: #0c1a22; }
+  .vs-pair-half.winner-b { background: #1a1610; }
   .vs-col.col-a { background: var(--border); border-radius: 5px 0 0 5px; overflow: hidden; }
   .vs-col.col-b { background: var(--border); border-radius: 0 5px 5px 0; overflow: hidden; }
   .vs-divider {
@@ -236,15 +239,15 @@
     background: var(--panel); padding: 3px 4px; border-radius: 3px;
     border: 1px solid var(--border2); position: relative; z-index: 1;
   }
-  .vs-stat-cell { padding: 14px 14px; background: var(--surface); }
+  .vs-stat-cell { padding: 7px 12px; background: var(--surface); }
   .vs-stat-cell.winner-a { background: #0c1a22; }
   .vs-stat-cell.winner-b { background: #1a1610; }
-  .vs-stat-label { font-size: 8px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
-  .vs-stat-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
-  .vs-stat-sub { font-size: 9px; color: var(--muted); margin-top: 4px; }
+  .vs-stat-label { font-size: 8px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
+  .vs-stat-value { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .vs-stat-sub { font-size: 9px; color: var(--muted); margin-top: 2px; }
   .vs-winner-badge {
     display: inline-block; font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
-    padding: 2px 5px; border-radius: 3px; text-transform: uppercase; margin-top: 5px;
+    padding: 1px 4px; border-radius: 3px; text-transform: uppercase; margin-top: 3px;
   }
   .vs-winner-badge.badge-a { background: var(--a-bg); border: 1px solid var(--a-border); color: var(--a-color); }
   .vs-winner-badge.badge-b { background: var(--b-bg); border: 1px solid var(--b-border); color: var(--b-color); }
@@ -272,8 +275,8 @@
   .bar-fill.stab { background: #60a5fa; }
 
   /* Dual bars for VS */
-  .dual-bar-row { margin-bottom: 10px; }
-  .dual-bar-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
+  .dual-bar-row { margin-bottom: 6px; }
+  .dual-bar-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
   .dual-bar-wrap { display: flex; align-items: center; gap: 6px; }
   .dual-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .dual-bar-track.track-a { direction: rtl; } /* fill grows left-to-right from center */
@@ -376,7 +379,7 @@
   .slot-card.active.type-Clothing .slot-badge { color: var(--clothing-color); background: var(--clothing-bg); border-color: var(--clothing-border); }
 
   .slot-body { padding: 10px 11px; }
-  .section-label { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .section-label { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
 
   .armour-grid { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
   .armour-btn {
@@ -621,24 +624,14 @@ function renderResults() {
           <div class="vs-grid">
             <div class="vs-col col-a">
               <div class="vs-col-header hdr-a">Loadout A</div>
-              <div class="vs-stat-cell ${cellClass(wDmg, 'a')}">
-                <div class="vs-stat-label">Damage Mitigation</div>
-                <div class="vs-stat-value" style="color:#f87171">${fmtPct(sa.dmg)}</div>
-                ${badge(wDmg, 'a')}
-              </div>
-              <div class="vs-stat-cell ${cellClass(wStab, 'a')}">
-                <div class="vs-stat-label">Stability Mitigation</div>
-                <div class="vs-stat-value" style="color:#60a5fa">${fmtPct(sa.stab)}</div>
-                ${badge(wStab, 'a')}
-              </div>
-              <div class="vs-stat-cell ${cellClass(wEhDmg, 'a')}">
-                <div class="vs-stat-label">Effective HP (Dmg)</div>
-                <div class="vs-stat-value" style="color:#f87171">${fmtEH(sa.ehDmg)}</div>
+              <div class="vs-pair-half ${cellClass(wEhDmg, 'a')}">
+                <div class="vs-stat-label">EHP / Dmg Mitigation</div>
+                <div class="vs-stat-value" style="color:#f87171">${fmtEH(sa.ehDmg)} <span style="font-size:13px;opacity:0.6">/ ${fmtPct(sa.dmg)}</span></div>
                 ${badge(wEhDmg, 'a')}
               </div>
-              <div class="vs-stat-cell ${cellClass(wEhStab, 'a')}">
-                <div class="vs-stat-label">Effective HP (Stab)</div>
-                <div class="vs-stat-value" style="color:#60a5fa">${fmtEH(sa.ehStab)}</div>
+              <div class="vs-pair-half ${cellClass(wEhStab, 'a')}">
+                <div class="vs-stat-label">EHP / Stab Mitigation</div>
+                <div class="vs-stat-value" style="color:#60a5fa">${fmtEH(sa.ehStab)} <span style="font-size:13px;opacity:0.6">/ ${fmtPct(sa.stab)}</span></div>
                 ${badge(wEhStab, 'a')}
               </div>
             </div>
@@ -647,24 +640,14 @@ function renderResults() {
             </div>
             <div class="vs-col col-b">
               <div class="vs-col-header hdr-b">Loadout B</div>
-              <div class="vs-stat-cell ${cellClass(wDmg, 'b')}">
-                <div class="vs-stat-label">Damage Mitigation</div>
-                <div class="vs-stat-value" style="color:#f87171">${fmtPct(sb.dmg)}</div>
-                ${badge(wDmg, 'b')}
-              </div>
-              <div class="vs-stat-cell ${cellClass(wStab, 'b')}">
-                <div class="vs-stat-label">Stability Mitigation</div>
-                <div class="vs-stat-value" style="color:#60a5fa">${fmtPct(sb.stab)}</div>
-                ${badge(wStab, 'b')}
-              </div>
-              <div class="vs-stat-cell ${cellClass(wEhDmg, 'b')}">
-                <div class="vs-stat-label">Effective HP (Dmg)</div>
-                <div class="vs-stat-value" style="color:#f87171">${fmtEH(sb.ehDmg)}</div>
+              <div class="vs-pair-half ${cellClass(wEhDmg, 'b')}">
+                <div class="vs-stat-label">EHP / Dmg Mitigation</div>
+                <div class="vs-stat-value" style="color:#f87171">${fmtEH(sb.ehDmg)} <span style="font-size:13px;opacity:0.6">/ ${fmtPct(sb.dmg)}</span></div>
                 ${badge(wEhDmg, 'b')}
               </div>
-              <div class="vs-stat-cell ${cellClass(wEhStab, 'b')}">
-                <div class="vs-stat-label">Effective HP (Stab)</div>
-                <div class="vs-stat-value" style="color:#60a5fa">${fmtEH(sb.ehStab)}</div>
+              <div class="vs-pair-half ${cellClass(wEhStab, 'b')}">
+                <div class="vs-stat-label">EHP / Stab Mitigation</div>
+                <div class="vs-stat-value" style="color:#60a5fa">${fmtEH(sb.ehStab)} <span style="font-size:13px;opacity:0.6">/ ${fmtPct(sb.stab)}</span></div>
                 ${badge(wEhStab, 'b')}
               </div>
             </div>
